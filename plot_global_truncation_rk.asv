@@ -1,0 +1,187 @@
+function plot_global_truncation_rk
+    % Plotting parameters
+    tspan = [0 10];
+    h_list = logspace(-4, -1, 20);
+
+ 
+    %system params
+    orbit_params = struct();
+    orbit_params.m_sun = 1;
+    orbit_params.m_planet = 1;
+    orbit_params.G = 40;
+    x0 = 8;
+    y0 = 0;
+    dxdt0 = 0;
+    dydt0 = 1.5;
+    V0 = [x0;y0;dxdt0;dydt0];
+
+    V_true = compute_planetary_motion(t_range, V0, orbit_params);
+    rate_func = @(t,V) gravity_rate_func(t,V,orbit_params);
+
+    % Forward Euler Method
+    BT_eul.A = 0;
+    BT_eul.B = 1;
+    BT_eul.C = 0;
+
+
+    % Explicit midpoint method
+    BT_midpt.A = [0, 0; 1/2, 0];
+    BT_midpt.B = [0; 1];
+    BT_midpt.C = [0; 1/2];
+
+    % Kutta's third-order method
+    BT_third.A = [0, 0, 0; 1/2, 0, 0; -1, 2, 0];
+    BT_third.B = [1/6; 2/3; 1/6];
+    BT_third.C = [0; 1/2; 1];
+
+    BT_list = {BT_eul, BT_midpt, BT_third};
+    p_expected = [1; 2; 3];
+
+    %initilaize variables
+    nM = numel(BT_list);
+    nH = numel(h_list);
+    global_err = zeros(nM, nH);
+    h_avg_list = zeros(nM, nH);
+    num_evals_list = zeros(nM, nH);
+
+    for m = 1:nM
+        for i = 1:nH
+            [~, X_list, h_avg, num_evals] = explicit_RK_fixed_step_integration( ...
+                rate_func, tspan, V0, h_list(i), BT_list{m});
+            h_avg_list(m,i) = h_avg;
+            num_evals_list(m,i) = num_evals;
+            global_err(m,i) = norm(X_list(end,:)' - V_true);
+        end
+    endfor i = 1:length(h_list)
+        h = h_list(i);
+
+        %forward euler
+        [G, ~] = forward_euler_step(@rate_func02,t_ex,X_ex,h);
+        X_euler = solution02(t_ex+h);
+        error_list_euler_f(i) = norm(G-X_euler);
+        error_list_diff(i) = norm(X_euler-X_ex);
+
+
+        [~,X_list,h_avg,num_evals] = forward_euler_fixed_step_integration(@rate_func02,tspan,solution02(tspan(1)),h);
+        h_avg_list(i) = h_avg;
+        num_evals_euler_list_f(i) = num_evals;
+        global_truncation_euler_f(i) = norm(X_list(end,:)' - solution02(tspan(end)));
+
+        % backward euler 
+        [G, ~] = backward_euler_step(@rate_func02,t_ex,X_ex,h);
+        error_list_euler_b(i) = norm(G-X_euler);
+
+        [~,X_list,~,num_evals] = implicit_fixed_step_integration(@rate_func02,@backward_euler_step, tspan,solution02(tspan(1)),h);
+        num_evals_euler_list_b(i) = num_evals;
+        global_truncation_euler_b(i) = norm(X_list(end,:)' - solution02(tspan(end)));
+
+        % explicit midpt
+        [G, ~] = explicit_midpoint_step(@rate_func02,t_ex,X_ex,h);
+        error_list_midpoint_ex(i) = norm(G-X_euler);
+
+        [~,X_list,~,num_evals] = explicit_midpoint_fixed_step_integration(@rate_func02,tspan,solution02(tspan(1)),h);
+        num_evals_midpoint_list_ex(i) = num_evals;
+        global_truncation_midpoint_ex(i) = norm(X_list(end,:)' - solution02(tspan(end)));
+
+        % implicit midpt
+        [G, ~] = implicit_midpoint_step(@rate_func02,t_ex,X_ex,h);
+        error_list_midpoint_im(i) = norm(G-X_euler);
+
+        [~,X_list,~,num_evals] = implicit_fixed_step_integration(@rate_func02,@implicit_midpoint_step, tspan,solution02(tspan(1)),h);
+        num_evals_midpoint_list_im(i) = num_evals;
+        global_truncation_midpoint_im(i) = norm(X_list(end,:)' - solution02(tspan(end)));
+    end
+
+    % Find local p values
+    idx = h_list>= 1e-3 & h_list<=1e-1;
+    mdl_local_euler_f = polyfit(log(h_list(idx)), log(error_list_euler_f(idx)),1);
+    mdl_local_euler_b = polyfit(log(h_list(idx)), log(error_list_euler_b(idx)),1);
+    mdl_local_midpoint_ex = polyfit(log(h_list(idx)), log(error_list_midpoint_ex(idx)),1);
+    mdl_local_midpoint_im = polyfit(log(h_list(idx)), log(error_list_midpoint_im(idx)),1);
+    mdl_local_diff = polyfit(log(h_list(idx)), log(error_list_diff(idx)),1);
+
+    p_local_euler_f = mdl_local_euler_f(1)
+    p_local_euler_b = mdl_local_euler_b(1)
+    p_local_midpoint_ex = mdl_local_midpoint_ex(1)
+    p_local_midpoint_im = mdl_local_midpoint_im(1)
+    p_local_diff = mdl_local_diff(1)
+
+    % Find global p values
+    mdl_global_euler_f = polyfit(log(h_list(idx)), log(global_truncation_euler_f(idx)),1);
+    mdl_global_euler_b = polyfit(log(h_list(idx)), log(global_truncation_euler_b(idx)),1);
+    mdl_global_midpoint_ex = polyfit(log(h_list(idx)), log(global_truncation_midpoint_ex(idx)),1);
+    mdl_global_midpoint_im = polyfit(log(h_list(idx)), log(global_truncation_midpoint_im(idx)),1);
+
+    p_global_euler_f = mdl_global_euler_f(1)
+    p_global_euler_b = mdl_global_euler_b(1)
+    p_global_midpoint_ex = mdl_global_midpoint_ex(1)
+    p_global_midpoint_im = mdl_global_midpoint_im(1)
+
+    
+    % Plot local truncation error for all methods
+    figure();
+    loglog(h_list, error_list_euler_f, 'b.', 'MarkerSize', 20)
+    hold on;
+    loglog(h_list, error_list_euler_b, 'r.', 'MarkerSize', 10)
+    loglog(h_list, error_list_midpoint_ex, 'c.', 'MarkerSize',15)
+    loglog(h_list, error_list_midpoint_im, 'g.', 'MarkerSize',15)
+
+    title('Local Truncation Error', ...
+        'Interpreter', 'Latex', 'FontSize', 22)
+    xlabel('Step Size: h (-)', ...
+        'Interpreter', 'Latex', 'FontSize', 18)
+    ylabel('Local Truncation Error (-)', ...
+        'Interpreter', 'Latex', 'FontSize', 18)
+
+    legend('Forward Euler', 'Backward Euler', 'Explicit Midpoint', 'Implicit Midpoint', ...
+        'Interpreter', 'Latex', 'Location', 'northwest')
+    set(gca, 'FontSize', 12)
+    hold off
+
+    % Plot global error vs step size
+    figure();
+    loglog(h_list, global_truncation_euler_f, 'b.', 'MarkerSize', 20)
+    hold on;
+    loglog(h_list, global_truncation_euler_b, 'r.', 'MarkerSize', 10)
+    loglog(h_list, global_truncation_midpoint_ex, 'c.', 'MarkerSize',15)
+    loglog(h_list, global_truncation_midpoint_im, 'g.', 'MarkerSize',15)
+
+    title('Global Truncation Error vs Step Size', ...
+        'Interpreter', 'Latex', 'FontSize', 22)
+    xlabel('Step Size: h (-)', ...
+        'Interpreter', 'Latex', 'FontSize', 18)
+    ylabel('Global Truncation Error (-)', ...
+        'Interpreter', 'Latex', 'FontSize', 18)
+
+    legend('Forward Euler', 'Backward Euler', ...
+        'Explicit Midpoint', 'Implicit Midpoint', ...
+        'Interpreter', 'Latex', 'Location', 'southeast')
+    set(gca, 'FontSize', 14)
+    hold off
+
+
+    % Plot global error vs rate function calls
+    figure();
+    loglog(num_evals_euler_list_f, global_truncation_euler_f,  'b.', 'MarkerSize', 15)
+    hold on;
+    loglog(num_evals_euler_list_b, global_truncation_euler_b, 'r.', 'MarkerSize', 15)
+    loglog(num_evals_midpoint_list_ex, global_truncation_midpoint_ex, 'c.', 'MarkerSize',15)
+    loglog(num_evals_midpoint_list_im, global_truncation_midpoint_im, 'g.', 'MarkerSize',15)
+
+    title('Global Truncation Error vs Rate Function Calls', ...
+        'Interpreter', 'Latex', 'FontSize', 22)
+    xlabel('Number of Rate Function Calls (-)', ...
+        'Interpreter', 'Latex', 'FontSize', 18)
+    ylabel('Global Truncation Error (-)', ...
+        'Interpreter', 'Latex', 'FontSize', 18)
+
+    legend('Forward Euler', 'Backward Euler', ...
+        'Explicit Midpoint', 'Implicit Midpoint', ...
+        'Interpreter', 'Latex', 'Location', 'southwest', 'Fontsize', 14)
+    set(gca, 'FontSize', 14)
+    ylim([1e-8 1e0])
+    xlim([1e2, 10^6])
+    hold off
+
+
+end

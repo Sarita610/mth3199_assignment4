@@ -25,7 +25,6 @@ function plotting
 
 
     % Explicit midpoint method
-
     BT_midpt.A = [0, 0; 1/2, 0];
     BT_midpt.B = [0; 1];
     BT_midpt.C = [0; 1/2];
