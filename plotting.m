@@ -17,7 +17,7 @@ function plotting
     V = compute_planetary_motion(t_range, V0, orbit_params);
     rate_func = @(t,V) gravity_rate_func(t,V,orbit_params);
 
-    %Euler Method
+    % Forward Euler Method
 
     BT_eul.A = 0;
     BT_eul.B = 1;
@@ -40,7 +40,7 @@ function plotting
     [t_third, X_third] = explicit_RK_fixed_step_integration(rate_func, tspan, V0, h, BT_third);
     
 
-    %Plot 
+    %Plot - both x and y 
     figure();
     axis equal; axis square;
     axis([-20,20,-20,20])
@@ -50,13 +50,43 @@ function plotting
     plot(V(:,1), V(:,2), 'k', 'LineWidth', 2);
 
     plot(X_eul(:,1), X_eul(:,2), '--', 'LineWidth', 1.5);
-    plot(X_midpt(:,1), X_midpt(:,2), '-.', 'LineWidth', 1.5);
-    plot(X_third(:,1), X_third(:,2), ':', 'LineWidth', 1.5);
+    plot(X_midpt(:,1), X_midpt(:,2), ':', 'LineWidth', 1.5);
+    plot(X_third(:,1), X_third(:,2), '-.', 'LineWidth', 1.5);
 
-    xlabel('$x$ position (-)', 'Interpreter', 'Latex');
-    ylabel('$y$ position (-)', 'Interpreter', 'Latex');
-    title('Runge-Kutta Example Integration Plot', 'Interpreter', 'Latex', 'FontSize', 22)
+    xlabel('$x$ position', 'Interpreter', 'Latex');
+    ylabel('$y$ position', 'Interpreter', 'Latex');
+    title('Planetary Motion Plot', 'Interpreter', 'Latex', 'FontSize', 22)
 
-    legend('Sun', 'True solution', 'Euler', 'Explicit midpoint', "Kutta's third-order", 'Location', 'best', 'Interpreter', 'Latex');
+    legend('Sun', 'Exact solution', 'Forward Euler', 'Explicit midpoint', "Kutta's third-order", 'Location', 'best', 'Interpreter', 'Latex');
+    hold off;
+
+    % Plot subfigures
+    figure();
+    
+    subplot(2,1,1);
+    plot(t_range, V(:,1), 'k-', 'LineWidth', 2);
+    hold on;
+    plot(t_eul, X_eul(:,1), '--', 'LineWidth', 1.5);
+    plot(t_midpt, X_midpt(:,1), ':', 'LineWidth', 1.5);
+    plot(t_third, X_third(:,1), '-.', 'LineWidth', 1.5);
+
+    xlabel('Time', 'Interpreter', 'Latex');
+    ylabel('$x(t)$', 'Interpreter', 'Latex');
+    title('Planetary Motion x-component');
+    legend('Exact solution', 'Forward Euler', 'Explicit midpoint', "Kutta's third-order", 'Location', 'best', 'Interpreter', 'Latex');
+
+    subplot(2,1,2);
+    plot(t_range, V(:,2), 'k-', 'LineWidth', 2);
+    hold on;
+    plot(t_eul, X_eul(:,2), '--', 'LineWidth', 1.5);
+    plot(t_midpt, X_midpt(:,2), ':', 'LineWidth', 1.5);
+    plot(t_third, X_third(:,2), '-.', 'LineWidth', 1.5);
+
+    xlabel('Time', 'Interpreter', 'Latex');
+    ylabel('$y(t)$', 'Interpreter', 'Latex');
+    title('Planetary Motion y-component');
+    legend('Exact solution', 'Forward Euler', 'Explicit midpoint', "Kutta's third-order", 'Location', 'best', 'Interpreter', 'Latex');
+
+
 
 end
