@@ -32,7 +32,7 @@ function [XB1, XB2, num_evals] = RK_step_embedded(rate_func_in,t,XA,h,BT_struct)
         num_evals = num_evals + 1;
     end 
     
-    XB1 = XA+ h* k* B(1,:)'; 
-    XB2 = XA+ h *k*B(2,:)';
+    XB1 = XA+ h* K* B(1,:)'; 
+    XB2 = XA+ h *K*B(2,:)';
 
 end

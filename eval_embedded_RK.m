@@ -40,9 +40,9 @@ end
     mdl_local_fehlberg2 = polyfit(log(h_list(idx)), log(error_list_fehlberg2(idx)), 1);
     mdl_difference      = polyfit(log(h_list(idx)), log(difference_list_fehlberg(idx)), 1);
     mdl_true_difference = polyfit(log(h_list(idx)), log(exact_difference_list_fehlberg(idx)), 1);
-    p_local_fehlberg1 = mdl_local_fehlberg1(1);
-    p_local_fehlberg2 = mdl_local_fehlberg2(1);
-    p_difference      = mdl_difference(1);
+    p_local_fehlberg1 = mdl_local_fehlberg1(1)
+    p_local_fehlberg2 = mdl_local_fehlberg2(1)
+    p_difference      = mdl_difference(1)
     p_true_difference = mdl_true_difference(1);
 
 % Fehlberg local truncation plots
@@ -58,15 +58,16 @@ end
 
 % Fehlberg local truncation --
     figure();
-    loglog(h_list, error_list_fehlberg1, 'o', 'MarkerSize', 4);
+    loglog(h_list, error_list_fehlberg1, '.', 'MarkerSize', 16);
     hold on
-    loglog(h_list, error_list_fehlberg2, 'o', 'MarkerSize', 4);
-    loglog(h_list, difference_list_fehlberg, 'o', 'MarkerSize', 4);
-    loglog(h_list, exact_difference_list_fehlberg, 'o', 'MarkerSize', 4);
+    loglog(h_list, error_list_fehlberg2, '.', 'MarkerSize', 14);
+    loglog(h_list, difference_list_fehlberg, '.', 'MarkerSize', 10);
+    loglog(h_list, exact_difference_list_fehlberg, '.', 'MarkerSize', 10);
     loglog(h_list(idx), exp(polyval(mdl_local_fehlberg1, log(h_list(idx)))), 'k--');
     loglog(h_list(idx), exp(polyval(mdl_local_fehlberg2, log(h_list(idx)))), 'k--');
-    xlabel('step size $h$','Interpreter','Latex');
-    ylabel('error','Interpreter','Latex');
-    title('Fehlberg local truncation error');
+    xlabel('Step Size $h$ (-)','Interpreter','Latex', 'FontSize',16);
+    ylabel('Local Truncation Error (-)','Interpreter','Latex', 'FontSize',16);
+    title('Fehlberg Local Truncation Error', 'FontSize', 20);
+    legend('$XB1$ Error', '$XB2$ Error', '$X_{\mathrm{diff}}$ : $|XB1-XB2|$', '$|f(t_{\mathrm{ref}}+h)-f(t_{\mathrm{ref}})|$', 'Interpreter', 'Latex', 'Location', 'northwest', 'FontSize', 12 )
 
 end 
