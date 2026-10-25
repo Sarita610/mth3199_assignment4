@@ -24,5 +24,19 @@
 % True if the estimated error was larger than error_desired
 function [XB, num_evals, h_next, redo] = explicit_RK_variable_step...
 (rate_func_in,t,XA,h,BT_struct,p,error_desired)
-%your code here
+    
+    a = 3;      
+    safeguard_val = 0.9; %[1.5, 10] range
+    [XB1, XB2, num_evals] = RK_step_embedded(rate_func_in,t,XA,h,BT_struct);
+    XB = XB1;                       
+    error = norm(XB1 - XB2);         
+ 
+    if error == 0                
+        scale_factor = alpha;
+    else
+        scale_factor = min(safety*(error_desired/error)^(1/p), alpha);
+    end
+ 
+    h_next = scale_factor*h;
+    redo = error > error_desired;
 end
