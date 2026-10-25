@@ -15,7 +15,7 @@ function eval_embedded_RK
     X_ex = solution02(t_ex);
     %tspan = [0 30];
 
-    h_list = logspace(-5, -1, 100);
+    h_list = logspace(-5, 2, 100);
 
     error_list_fehlberg1 = zeros(size(h_list));
     error_list_fehlberg2 = zeros(size(h_list));
@@ -35,7 +35,7 @@ for i = 1:length(h_list)
         difference_list_fehlberg(i) = difference;
         exact_difference_list_fehlberg(i) = norm(X_fehlberg - X_ex);
 end
-    idx = h_list>= 1e-3 & h_list<=1e-1;
+    idx = h_list>= 1e-3 & h_list<=1e2;
     mdl_local_fehlberg1 = polyfit(log(h_list(idx)), log(error_list_fehlberg1(idx)), 1);
     mdl_local_fehlberg2 = polyfit(log(h_list(idx)), log(error_list_fehlberg2(idx)), 1);
     mdl_difference      = polyfit(log(h_list(idx)), log(difference_list_fehlberg(idx)), 1);
@@ -50,6 +50,19 @@ end
     loglog(h_list, error_list_fehlberg1, h_list, error_list_fehlberg2, ...
            h_list, difference_list_fehlberg, h_list, exact_difference_list_fehlberg, 'LineWidth', 1.5);
     hold on
+    loglog(h_list(idx), exp(polyval(mdl_local_fehlberg1, log(h_list(idx)))), 'k--');
+    loglog(h_list(idx), exp(polyval(mdl_local_fehlberg2, log(h_list(idx)))), 'k--');
+    xlabel('step size $h$','Interpreter','Latex');
+    ylabel('error','Interpreter','Latex');
+    title('Fehlberg local truncation error');
+
+% Fehlberg local truncation --
+    figure();
+    loglog(h_list, error_list_fehlberg1, 'o', 'MarkerSize', 4);
+    hold on
+    loglog(h_list, error_list_fehlberg2, 'o', 'MarkerSize', 4);
+    loglog(h_list, difference_list_fehlberg, 'o', 'MarkerSize', 4);
+    loglog(h_list, exact_difference_list_fehlberg, 'o', 'MarkerSize', 4);
     loglog(h_list(idx), exp(polyval(mdl_local_fehlberg1, log(h_list(idx)))), 'k--');
     loglog(h_list(idx), exp(polyval(mdl_local_fehlberg2, log(h_list(idx)))), 'k--');
     xlabel('step size $h$','Interpreter','Latex');
