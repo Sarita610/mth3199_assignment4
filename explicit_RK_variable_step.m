@@ -25,8 +25,8 @@
 function [XB, num_evals, h_next, redo] = explicit_RK_variable_step...
 (rate_func_in,t,XA,h,BT_struct,p,error_desired)
     
-    a = 3;      
-    safeguard_val = 0.9; %[1.5, 10] range
+    alpha = 3;      
+    safety = 0.9; %[1.5, 10] range
     [XB1, XB2, num_evals] = RK_step_embedded(rate_func_in,t,XA,h,BT_struct);
     XB = XB1;                       
     error = norm(XB1 - XB2);         
@@ -40,3 +40,4 @@ function [XB, num_evals, h_next, redo] = explicit_RK_variable_step...
     h_next = scale_factor*h;
     redo = error > error_desired;
 end
+

@@ -18,5 +18,6 @@
 %num_evals: total number of calls made to rate_func_in during the integration
 function [t_list,X_list,h_avg, num_evals] = explicit_RK_variable_step_integration ...
 (rate_func_in,tspan,X0,h_ref,BT_struct,p,error_desired)
-%your code here
+
 end
+
