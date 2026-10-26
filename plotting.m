@@ -7,7 +7,7 @@ function plotting
     x0 = 8;
     y0 = 0;
     dxdt0 = 0;
-    dydt0 = 1.5;
+    dydt0 = 1;
     V0 = [x0;y0;dxdt0;dydt0];
     
     tspan = [0 30];
