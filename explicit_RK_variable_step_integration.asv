@@ -18,32 +18,83 @@
 %num_evals: total number of calls made to rate_func_in during the integration
 function [t_list,X_list,h_avg, num_evals] = explicit_RK_variable_step_integration ...
 (rate_func_in,tspan,X0,h_ref,BT_struct,p,error_desired)
-    
-    [XB1, XB2, num_evals] = RK_step_embedded(rate_func_in, t, XA, h, BT_struct);
 
-    error = norm(XB1-XB2);
+    t_start = tspan(1);
+    t_end = tspan(2);
     
+    t = t_start;
+    X = X0(:);
+    h = h_ref;
+    num_evals = 0;
+    fails = 0;
+    attempt = 0;
+  
+    
+    while t < t_end
+        if t + h > t_end
+            h = t_end-t;
+        end
+
+        [XB, num_evals, h_next, redo] = explicit_RK_variable_step...
+            (rate_func_in,t,XA,h,BT_struct,p,error_desired);
+
+        num_evals = num_evals + n;
+        attempt = attempt + 1;
+
+        if redo 
+            fails = fails +1;
+        else
+            t = t + h;
+            X = XB;
+            t_list(end+1, 1) = t;
+            X_list(end+1, 1) = X.';
+
 end
 
+function [t_list,X_list,h_avg,num_evals,fail_rate] = explicit_RK_variable_step_integration ...
+    (rate_func_in,tspan,X0,h_ref,BT_struct,p,error_desired)
 
-function [XB, num_evals, h_next, redo] = explicit_RK_variable_step ...
-    (rate_func_in,t,XA,h,BT_struct,p,error_desired)
+    t_start = tspan(1);
+    t_end   = tspan(2);
 
-    alpha = 2;   % max growth factor per step; try values in [1.5, 10]
+    t = t_start;
+    X = X0(:);
+    h = h_ref;                 % initial guess; the adaptive rule takes over from here
 
-    % one embedded step gives two estimates
-    [XB1, XB2, num_evals] = RK_step_embedded(rate_func_in,t,XA,h,BT_struct);
+    t_list = t;
+    X_list = X.';
 
-    % scalar error estimate (norm handles vector-valued X)
-    err = norm(XB1 - XB2);
-    err = max(err, eps);          % avoid dividing by zero
+    num_evals = 0;
+    attempts  = 0;
+    fails     = 0;
 
-    % update rule
-    h_next = min(0.9*(error_desired/err)^(1/p), alpha) * h;
+    while t < t_end
+        % clip so the last step lands exactly on t_end
+        if t + h > t_end
+            h = t_end - t;
+        end
 
-    % reject if the estimate exceeded the target
-    redo = err > error_desired;
+        [XB, n, h_next, redo] = explicit_RK_variable_step ...
+            (rate_func_in,t,X,h,BT_struct,p,error_desired);
 
-    % the value to advance with; use the same B row as your fixed-step runs
-    XB = XB1;
+        num_evals = num_evals + n;
+        attempts  = attempts + 1;
+
+        if redo
+            % reject: keep t and X unchanged, retry with the smaller h_next
+            fails = fails + 1;
+        else
+            % accept: advance
+            t = t + h;
+            X = XB;
+            t_list(end+1,1) = t;
+            X_list(end+1,:) = X.';
+        end
+
+        h = h_next;
+    end
+
+    h_avg     = (t_end - t_start) / (length(t_list) - 1);
+    fail_rate = fails / attempts;
 end
+

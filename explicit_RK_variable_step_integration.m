@@ -19,5 +19,44 @@
 function [t_list,X_list,h_avg, num_evals] = explicit_RK_variable_step_integration ...
 (rate_func_in,tspan,X0,h_ref,BT_struct,p,error_desired)
 
+    t_start = tspan(1);
+    t_end = tspan(2);
+    
+    t = t_start;
+    X = X0(:);
+    h = h_ref;
+    num_evals = 0;
+    fails = 0;
+    attempt = 0;
+  
+    
+    while t < t_end
+        if t + h > t_end
+            h = t_end-t;
+        end
+
+        [XB, num_evals, h_next, redo] = explicit_RK_variable_step...
+            (rate_func_in,t,XA,h,BT_struct,p,error_desired);
+
+        num_evals = num_evals + n;
+        attempt = attempt + 1;
+
+        if redo 
+            fails = fails +1;
+        else
+            t = t + h;
+            X = XB;
+            t_list(end+1, 1) = t;
+            X_list(end+1, 1) = X.';
+        end
+    
+        h = h_next;
+    end
+    
+        h_avg = (t_end - t_start) / (length(t_list) - 1);
+        fail_rate = fails/attempts;
+
 end
+
+
 
