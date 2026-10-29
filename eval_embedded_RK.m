@@ -75,6 +75,6 @@ end
     xlabel('Step Size $h$ (-)','Interpreter','Latex', 'FontSize',16);
     ylabel('Local Truncation Error (-)','Interpreter','Latex', 'FontSize',16);
     title('Fehlberg Local Truncation Error', 'FontSize', 20);
-    legend('$XB1$ Error', '$XB2$ Error', '$X_{\mathrm{diff}}$ : $|XB1-XB2|$', '$|f(t_{\mathrm{ref}}+h)-f(t_{\mathrm{ref}})|$', 'Interpreter', 'Latex', 'Location', 'northwest', 'FontSize', 12 )
+    legend('Fehlberg: 5th-Order Error', 'Fehlberg: 4th-Order Error', '$X_{\mathrm{diff}}$ : $|XB1-XB2|$', '$|f(t_{\mathrm{ref}}+h)-f(t_{\mathrm{ref}})|$', 'Interpreter', 'Latex', 'Location', 'northwest', 'FontSize', 12 )
 
 end 
