@@ -96,11 +96,11 @@ function plot_global_truncation_rk
     loglog(h_fit, k_global(2)*h_fit.^p_global(2), 'c-', 'LineWidth', 1.5, 'HandleVisibility', 'off')
     loglog(h_fit, k_global(3)*h_fit.^p_global(3), 'm-', 'LineWidth', 1.5, 'HandleVisibility', 'off')
  
-    title('Global Truncation Error vs Step Size', 'Interpreter', 'Latex', 'FontSize', 22)
-    xlabel('Average Step Size: h (-)', 'Interpreter', 'Latex', 'FontSize', 18)
-    ylabel('Global Truncation Error (-)', 'Interpreter', 'Latex', 'FontSize', 18)
-    legend("Heun's Second Order", "Kutta's Third-Order", "3/8-Rule Forth-Order", ...
-        'Interpreter', 'Latex', 'Location', 'southeast')
+    title('Global Truncation Error vs Step Size', 'Interpreter', 'latex', 'FontSize', 22)
+    xlabel('Average Step Size: h (-)', 'Interpreter', 'latex', 'FontSize', 18)
+    ylabel('Global Truncation Error (-)', 'Interpreter', 'latex', 'FontSize', 18)
+    legend("Heun's Second Order", "Kutta's Third-Order", "3/8-Rule Fourth-Order", ...
+        'Interpreter', 'latex', 'Location', 'southeast', 'FontSize', 14)
     set(gca, 'FontSize', 14)
     hold off
     
