@@ -34,9 +34,19 @@ function plot_global_truncation_rk
     BT_third.B = [1/6; 2/3; 1/6];
     BT_third.C = [0; 1/2; 1];
 
-    BT_list = {BT_eul, BT_midpt, BT_third};
-    p_expected = [1; 2; 3];
-    names = {'Forward Euler'; 'Explicit Midpoint'; "Kutta's Third-Order"};
+    %Heun's method
+    BT_heun.A = [0, 0; 1, 0];
+    BT_heun.B = [1/2; 1/2];
+    BT_heun.C = [0; 1];
+
+    %3/8 forth
+    BT_threeeight.A = [0, 0, 0, 0; 1/3, 0, 0, 0; -1/3, 1, 0, 0; 1, -1, 1, 0];
+    BT_threeeight.B = [1/8; 3/8; 3/8; 1/8];
+    BT_threeeight.C = [0; 1/3; 2/3; 1];
+
+    BT_list = {BT_heun, BT_third, BT_threeeight};
+    p_expected = [2; 3; 4];
+    names = {"Heun's Method"; "Kutta's Third-Order"; "3/8-Rule Forth-Order"};
 
     %initilaize variables
     nM = numel(BT_list);
@@ -57,9 +67,9 @@ function plot_global_truncation_rk
         end
     end
     
-    fit_range = [1e-3, 1e-1;    % Forward Euler
-                 1e-3, 1e-1;    % Explicit midpoint
-                 1e-3, 1e-1];   % Kutta's third-order
+    fit_range = [1e-3, 1e-1;    % heuns
+                 1e-3, 1e-1;    % Kutta's third-order
+                 1e-3, 1e-1];   % 3/8 rule
     for m = 1:nM
         idx = h_avg_list(m,:) >= fit_range(m,1) & h_avg_list(m,:) <= fit_range(m,2) ...
               & global_err(m,:) > 1e-13;
@@ -89,10 +99,12 @@ function plot_global_truncation_rk
     title('Global Truncation Error vs Step Size', 'Interpreter', 'Latex', 'FontSize', 22)
     xlabel('Average Step Size: h (-)', 'Interpreter', 'Latex', 'FontSize', 18)
     ylabel('Global Truncation Error (-)', 'Interpreter', 'Latex', 'FontSize', 18)
-    legend('Forward Euler', 'Explicit Midpoint', "Kutta's Third-Order", ...
+    legend("Heun's Second Order", "Kutta's Third-Order", "3/8-Rule Forth-Order", ...
         'Interpreter', 'Latex', 'Location', 'southeast')
     set(gca, 'FontSize', 14)
     hold off
     
+
+     
     
    
