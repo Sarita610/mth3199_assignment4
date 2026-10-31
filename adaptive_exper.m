@@ -75,11 +75,11 @@ function adaptive_exper
     loglog(h_avg_list_fixed, global_err_fixed, 'b.', 'MarkerSize', 20);
     hold on;
     loglog(h_avg_list_adapt, global_err_adapt, 'm.', 'MarkerSize', 20);
-
-    title('Global Truncation Error vs Step Size', 'Interpreter', 'Latex', 'FontSize', 22);
+    
+    title('Fehlberg Global Truncation Error Scaling vs Average Step Size', 'Interpreter', 'Latex', 'FontSize', 22);
     xlabel('Average Step Size: h (-)', 'Interpreter', 'Latex', 'FontSize', 18);
-    ylabel('Global Truncation Error (-)', 'Interpreter', 'Latex', 'FontSize', 18);
-    legend('Fixed step', 'Adaptive step', 'Interpreter', 'Latex', 'Location', 'southeast');
+    ylabel('Measured Global Truncation Error (-)', 'Interpreter', 'Latex', 'FontSize', 18);
+    legend('Fixed Step', 'Adaptive Step', 'Interpreter', 'Latex', 'Location', 'southeast');
     set(gca, 'FontSize', 14)
     hold off;
 
