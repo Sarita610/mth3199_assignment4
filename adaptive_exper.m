@@ -26,8 +26,8 @@ function adaptive_exper
 
     p = 5;
     h_ref = 0.05;
-    h_list = logspace(-3, -1, 15);    
-    error_list = logspace(-12, -3, 15); 
+    h_list = logspace(-3, -1, 30);    
+    error_list = logspace(-12, -3, 30); 
 
     nH = numel(h_list);
     nE = numel(error_list);
@@ -69,41 +69,54 @@ function adaptive_exper
 
     % Plot global vs avg step size
 
-    h_fit = logspace(log10(min([h_avg_list_fixed, h_avg_list_adapt])), ...
-                     log10(max([h_avg_list_fixed, h_avg_list_adapt])), 50);
+    h_fit_fix = logspace(log10(min(h_avg_list_fixed(idx_fixed))), ...
+                     log10(max(h_avg_list_fixed(idx_fixed))), 50);
+
+    h_fit_adapt = logspace(log10(min(h_avg_list_adapt(idx_adapt))), ...
+                     log10(max(h_avg_list_adapt(idx_adapt))), 50);
     figure();
     loglog(h_avg_list_fixed, global_err_fixed, 'b.', 'MarkerSize', 20);
     hold on;
     loglog(h_avg_list_adapt, global_err_adapt, 'm.', 'MarkerSize', 20);
-    
-    title('Fehlberg Global Truncation Error Scaling vs Average Step Size', 'Interpreter', 'Latex', 'FontSize', 22);
-    xlabel('Average Step Size: h (-)', 'Interpreter', 'Latex', 'FontSize', 18);
-    ylabel('Measured Global Truncation Error (-)', 'Interpreter', 'Latex', 'FontSize', 18);
-    legend('Fixed Step', 'Adaptive Step', 'Interpreter', 'Latex', 'Location', 'southeast');
+    loglog(h_fit_fix, exp(polyval(mdl_fixed, log(h_fit_fix))), 'b-', 'LineWidth', 2)
+    loglog(h_fit_adapt, exp(polyval(mdl_adapt, log(h_fit_adapt))), 'm-', 'LineWidth', 2)
+    title('Fehlberg Global Truncation Error Scaling vs Average Step Size', 'Interpreter', 'latex', 'FontSize', 22);
+    xlabel('Average Step Size: h (-)', 'Interpreter', 'latex', 'FontSize', 18);
+    ylabel('Measured Global Truncation Error (-)', 'Interpreter', 'latex', 'FontSize', 18);
+    legend('Fixed Step Data', 'Adaptive Step Data', 'Fixed Step Fit','Adaptive Step Fit', 'Interpreter', 'latex', 'Location', 'southeast');
     set(gca, 'FontSize', 14)
     hold off;
 
     % Plot global vs num function
+    mdl_fixed_ev = polyfit(log(num_evals_list_fixed(idx_fixed)), log(global_err_fixed(idx_fixed)), 1);
+    mdl_adapt_ev = polyfit(log(num_evals_list_adapt(idx_adapt)), log(global_err_adapt(idx_adapt)), 1);
+
+    ef = logspace(log10(min(num_evals_list_fixed(idx_fixed))), ...
+              log10(max(num_evals_list_fixed(idx_fixed))), 50);
+    ea = logspace(log10(min(num_evals_list_adapt(idx_adapt))), ...
+              log10(max(num_evals_list_adapt(idx_adapt))), 50);
 
     figure();
     loglog(num_evals_list_fixed, global_err_fixed, 'b.', 'MarkerSize', 20);
     hold on;
     loglog(num_evals_list_adapt, global_err_adapt, 'm.', 'MarkerSize', 20);
-
-    title('Global Truncation Error vs Function Evaluations', 'Interpreter', 'Latex', 'FontSize', 22);
-    xlabel('Number of Function Evaluations (-)', 'Interpreter', 'Latex', 'FontSize', 18);
-    ylabel('Global Truncation Error (-)', 'Interpreter', 'Latex', 'FontSize', 18);
-    legend('Fixed step', 'Adaptive step', 'Interpreter', 'Latex', 'Location', 'northeast');
+    loglog(ef, exp(polyval(mdl_fixed_ev, log(ef))), 'b-', 'LineWidth', 2);
+    loglog(ea, exp(polyval(mdl_adapt_ev, log(ea))), 'm-', 'LineWidth', 2);
+    
+    title('Fehlberg Global Truncation Error vs Function Evaluations', 'Interpreter', 'latex', 'FontSize', 22);
+    xlabel('Number of Rate Function Evaluations (-)', 'Interpreter', 'latex', 'FontSize', 18);
+    ylabel('Global Truncation Error (-)', 'Interpreter', 'latex', 'FontSize', 18);
+    legend('Fixed Step Data', 'Adaptive Step Data','Fixed Step Fit', 'Adaptive Step Fit', 'Interpreter', 'latex', 'Location', 'northeast');
     set(gca, 'FontSize', 14)
     hold off
 
     % Plot fail rate vs avg step size 
     figure();
-    semilogx(h_avg_list_adapt, fail_rate_list, 'c.', 'MarkerSize', 20)
+    semilogx(h_avg_list_adapt, fail_rate_list, 'k.', 'MarkerSize', 20)
 
-    title('Step Failure Rate vs Average Step Size', 'Interpreter', 'Latex', 'FontSize', 22)
-    xlabel('Average Step Size: h (-)', 'Interpreter', 'Latex', 'FontSize', 18)
-    ylabel('Failure Rate (-)', 'Interpreter', 'Latex', 'FontSize', 18)
+    title('Fehlberg Step Failure Rate vs Average Step Size', 'Interpreter', 'latex', 'FontSize', 22)
+    xlabel('Average Step Size: h (-)', 'Interpreter', 'latex', 'FontSize', 18)
+    ylabel('Failure Rate (-)', 'Interpreter', 'latex', 'FontSize', 18)
     set(gca, 'FontSize', 14)
 
     % Position, Velocity
@@ -117,24 +130,24 @@ function adaptive_exper
     % x
     figure();
     subplot(2,1,1); 
-    plot(t_range, V(:,1), '--', 'LineWidth', 2);
+    plot(t_range, V(:,1), '--', 'LineWidth', 3);
     hold on
-    plot(t_list, X_list(:,1), 'ro-', 'markerfacecolor','k','markeredgecolor','k','markersize', 2);
+    plot(t_list, X_list(:,1), 'ro-', 'markerfacecolor','k','markeredgecolor','k','markersize', 3);
     
-    xlabel('Time', 'Interpreter', 'Latex');
-    ylabel('$x(t)$', 'Interpreter', 'Latex'); 
-    title('Position vs Time', 'Interpreter', 'Latex')
-    legend('Exact Solution', 'Fehlburg Adaptive')
+    xlabel('Time (-)', 'Interpreter', 'latex', 'FontSize',18);
+    ylabel('$x(t)$', 'Interpreter', 'latex', 'FontSize',18); 
+    title('Planetary Motion Position vs Time For Error Threshold $10^{-4}$', 'Interpreter', 'latex', 'FontSize', 20)
+    legend('Exact Solution', 'Fehlberg Adaptive', 'Interpreter', 'latex', 'Location','southeast')
     hold off;
 
     % y
     subplot(2,1,2); 
-    plot(t_range, V(:,2), '--')
+    plot(t_range, V(:,2), '--', 'LineWidth', 3)
     hold on;
     plot(t_list, X_list(:,2), 'ro-', 'markerfacecolor','k','markeredgecolor','k','markersize',3);
-    xlabel('Time', 'Interpreter', 'Latex');
-    ylabel('$y(t)$', 'Interpreter', 'Latex')
-    legend('Exact Solution', 'Fehlburg Adaptive')
+    xlabel('Time (-)', 'Interpreter', 'latex', 'FontSize',18);
+    ylabel('$y(t)$', 'Interpreter', 'latex', 'FontSize',18)
+    legend('Exact Solution', 'Fehlberg Adaptive', 'Interpreter', 'latex', 'Location', 'northeast')
     hold off;
     
     % Plot Velocity
@@ -142,19 +155,19 @@ function adaptive_exper
     subplot(2,1,1); hold on
     plot(t_range, V(:,3), '--')
     plot(t_list, X_list(:,3), 'ro-', 'markerfacecolor','k','markeredgecolor','k','markersize',2);
-    xlabel('Time', 'Interpreter', 'Latex');
-    ylabel('$v_x(t)$', 'Interpreter', 'Latex'); 
-    title('Velocity vs Time', 'Interpreter', 'Latex');
-    legend('Exact Solution', 'Fehlburg Adaptive')
+    xlabel('Time', 'Interpreter', 'latex', 'FontSize', 18);
+    ylabel('$v_x(t)$', 'Interpreter', 'latex', 'FontSize',18); 
+    title('Velocity vs Time', 'Interpreter', 'latex');
+    legend('Exact Solution', 'Fehlberg Adaptive')
     hold off;
 
     subplot(2,1,2); 
     plot(t_range, V(:,4), '--');
     hold on;
     plot(t_list, X_list(:,4), 'ro-', 'markerfacecolor','k','markeredgecolor','k','markersize',2);
-    xlabel('Time', 'Interpreter', 'Latex');
-    ylabel('$v_y(t)$', 'Interpreter', 'Latex')
-    legend('Exact Solution', 'Fehlburg Adaptive')
+    xlabel('Time', 'Interpreter', 'latex');
+    ylabel('$v_y(t)$', 'Interpreter', 'latex')
+    legend('Exact Solution', 'Fehlberg Adaptive')
     hold off;
     
     % step size vs dist
@@ -162,10 +175,10 @@ function adaptive_exper
     r = sqrt(X_list(1:end-1,1).^2 + X_list(1:end-1,2).^2); 
     
     figure();
-    loglog(r, h_list, 'k.', 'MarkerSize', 12)
+    loglog(r, h_list, 'k.', 'MarkerSize', 20)
 
-    xlabel('Distance from Sun: r (-)', 'Interpreter', 'Latex', 'FontSize', 18);
-    ylabel('Step Size: h (-)', 'Interpreter', 'Latex', 'FontSize', 18);
-    title('Step Size vs Distance from Sun', 'Interpreter', 'Latex', 'FontSize', 22);
+    xlabel('Distance from Sun: r (-)', 'Interpreter', 'latex', 'FontSize', 18);
+    ylabel('Step Size: h (-)', 'Interpreter', 'latex', 'FontSize', 18);
+    title('Step Size vs Distance from the Sun', 'Interpreter', 'latex', 'FontSize', 22);
 
 end

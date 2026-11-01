@@ -48,7 +48,7 @@ function testing_variable_step_integration
     ylabel('$y$ position', 'Interpreter', 'Latex');
     title('Planetary Motion Plot', 'Interpreter', 'Latex', 'FontSize', 22)
 
-    legend('Sun', 'Exact solution', 'Fehlburg', 'Location', 'best', 'Interpreter', 'Latex');
+    legend('Sun', 'Exact solution', 'Fehlberg', 'Location', 'best', 'Interpreter', 'Latex');
     hold off;
 
     % Plot subfigures 
@@ -62,7 +62,7 @@ function testing_variable_step_integration
     xlabel('Time', 'Interpreter', 'Latex');
     ylabel('$x(t)$', 'Interpreter', 'Latex');
     title('Planetary Motion x-component');
-    legend('Exact solution', 'Fehlburg', 'Location', 'best', 'Interpreter', 'Latex');
+    legend('Exact solution', 'Fehlberg', 'Location', 'best', 'Interpreter', 'Latex');
 
     subplot(2,1,2); 
     plot(t_range,V(:,2),'k','LineWidth',2);
@@ -71,5 +71,5 @@ function testing_variable_step_integration
     xlabel('Time', 'Interpreter', 'Latex');
     ylabel('$y(t)$', 'Interpreter', 'Latex');
     title('Planetary Motion y-component');
-    legend('Exact solution', 'Fehlburg', 'Location', 'best', 'Interpreter', 'Latex');
+    legend('Exact solution', 'Fehlberg', 'Location', 'best', 'Interpreter', 'Latex');
 end
