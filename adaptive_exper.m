@@ -153,21 +153,21 @@ function adaptive_exper
     % Plot Velocity
     figure();   
     subplot(2,1,1); hold on
-    plot(t_range, V(:,3), '--')
-    plot(t_list, X_list(:,3), 'ro-', 'markerfacecolor','k','markeredgecolor','k','markersize',2);
-    xlabel('Time', 'Interpreter', 'latex', 'FontSize', 18);
+    plot(t_range, V(:,3), '--', 'LineWidth', 3)
+    plot(t_list, X_list(:,3), 'ro-', 'markerfacecolor','k','markeredgecolor','k','markersize',3);
+    xlabel('Time (-)', 'Interpreter', 'latex', 'FontSize', 18);
     ylabel('$v_x(t)$', 'Interpreter', 'latex', 'FontSize',18); 
-    title('Velocity vs Time', 'Interpreter', 'latex');
-    legend('Exact Solution', 'Fehlberg Adaptive')
+    title('Planetary Motion Velocity vs Time for Error Threshold $10^{-4}$', 'Interpreter', 'latex', 'Fontsize', 20);
+    legend('Exact Solution', 'Fehlberg Adaptive', 'Interpreter', 'latex', 'Location', 'northeast')
     hold off;
 
     subplot(2,1,2); 
-    plot(t_range, V(:,4), '--');
+    plot(t_range, V(:,4), '--', 'LineWidth', 3);
     hold on;
-    plot(t_list, X_list(:,4), 'ro-', 'markerfacecolor','k','markeredgecolor','k','markersize',2);
-    xlabel('Time', 'Interpreter', 'latex');
-    ylabel('$v_y(t)$', 'Interpreter', 'latex')
-    legend('Exact Solution', 'Fehlberg Adaptive')
+    plot(t_list, X_list(:,4), 'ro-', 'markerfacecolor','k','markeredgecolor','k','markersize',3);
+    xlabel('Time (-)', 'Interpreter', 'latex', 'FontSize', 18);
+    ylabel('$v_y(t)$', 'Interpreter', 'latex', 'FontSize', 18);
+    legend('Exact Solution', 'Fehlberg Adaptive', 'Interpreter', 'latex', 'Location', 'southeast')
     hold off;
     
     % step size vs dist

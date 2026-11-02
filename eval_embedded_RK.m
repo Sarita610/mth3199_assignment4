@@ -59,9 +59,9 @@ end
     hold on
     loglog(h_list(idx), exp(polyval(mdl_local_fehlberg1, log(h_list(idx)))), 'k--');
     loglog(h_list(idx), exp(polyval(mdl_local_fehlberg2, log(h_list(idx)))), 'k--');
-    xlabel('step size $h$','Interpreter','Latex');
-    ylabel('error','Interpreter','Latex');
-    title('Fehlberg local truncation error');
+    xlabel('step size $h$','Interpreter','latex','FontSize', 16 );
+    ylabel('error','Interpreter','latex', 'FontSize', 16);
+    title('Fehlberg local truncation error', 'Interpreter', 'latex', 'FontSize',20);
 
 % Fehlberg local truncation --
     figure();
@@ -72,9 +72,9 @@ end
     loglog(h_list, exact_difference_list_fehlberg, '.', 'MarkerSize', 10);
     % loglog(h_list(idx), exp(polyval(mdl_local_fehlberg1, log(h_list(idx)))), 'k--');
     % loglog(h_list(idx), exp(polyval(mdl_local_fehlberg2, log(h_list(idx)))), 'k--');
-    xlabel('Step Size $h$ (-)','Interpreter','Latex', 'FontSize',16);
-    ylabel('Local Truncation Error (-)','Interpreter','Latex', 'FontSize',16);
-    title('Fehlberg Local Truncation Error', 'FontSize', 20);
-    legend('Fehlberg: 5th-Order Error', 'Fehlberg: 4th-Order Error', '$X_{\mathrm{diff}}$ : $|XB1-XB2|$', '$|f(t_{\mathrm{ref}}+h)-f(t_{\mathrm{ref}})|$', 'Interpreter', 'Latex', 'Location', 'northwest', 'FontSize', 12 )
+    xlabel('Step Size $h$ (-)','Interpreter','latex', 'FontSize',16);
+    ylabel('Local Truncation Error (-)','Interpreter','latex', 'FontSize',16);
+    title('Fehlberg Local Truncation Error', 'Interpreter', 'latex','FontSize', 20);
+    legend('Fehlberg: 5th-Order Error', 'Fehlberg: 4th-Order Error', '$X_{\mathrm{diff}}$ : $|XB1-XB2|$', '$|f(t_{\mathrm{ref}}+h)-f(t_{\mathrm{ref}})|$', 'Interpreter', 'latex', 'Location', 'northwest', 'FontSize', 12 )
 
 end 
