@@ -41,22 +41,22 @@ function rk_integration_plot
     %Plot - both x and y 
     figure();
     axis equal; axis square;
-    axis([-20,20,-20,20])
+    axis([-5,10,-5,10])
     hold on
 
     plot(0,0,'ro','markerfacecolor','r','markersize',5);
     plot(V(:,1), V(:,2), 'k', 'LineWidth', 2);
 
-    plot(X_heun(:,1), X_heun(:,2), '--', 'LineWidth', 1.5);
+    plot(X_heun(:,1), X_heun(:,2), ':', 'LineWidth', 1.5);
     plot(X_third(:,1), X_third(:,2), '-.', 'LineWidth', 1.5);
-    plot(X_threeeight(:,1), X_threeeight(:,2), ':', 'LineWidth', 1.5);
+    plot(X_threeeight(:,1), X_threeeight(:,2), '--', 'LineWidth', 1.5);
     
 
-    xlabel('$x$ position', 'Interpreter', 'Latex');
-    ylabel('$y$ position', 'Interpreter', 'Latex');
-    title('Planetary Motion Plot', 'Interpreter', 'Latex', 'FontSize', 22)
+    xlabel('$x$ position', 'Interpreter', 'latex', 'FontSize', 18);
+    ylabel('$y$ position', 'Interpreter', 'latex', 'FontSize' ,18);
+    title('Planetary Motion of Runge-Kutta Methods', 'Interpreter', 'latex', 'FontSize', 22)
 
-    legend('Sun', 'Exact solution', "Heun's Second Order", "Kutta's Third-Order", "3/8-Rule Fourth-Order", 'Location', 'best', 'Interpreter', 'Latex');
+    legend('Sun', 'Exact solution', "Heun's Second Order", "Kutta's Third-Order", "3/8-Rule Fourth-Order", 'Location', 'northeast', 'Interpreter', 'latex');
     hold off;
 
    

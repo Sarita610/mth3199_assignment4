@@ -55,21 +55,22 @@ function testing_variable_step_integration
     figure();
 
     subplot(2,1,1); 
-    plot(t_range, V(:,1), 'k-', 'LineWidth', 2);
+    plot(t_range, V(:,1), 'k-', 'LineWidth', 3);
     hold on;
-    plot(t_Fehl, X_Fehl(:,1),'--', 'LineWidth', 1.5);
+    plot(t_Fehl, X_Fehl(:,1),'r--', 'LineWidth', 3);
 
-    xlabel('Time', 'Interpreter', 'Latex');
-    ylabel('$x(t)$', 'Interpreter', 'Latex');
-    title('Planetary Motion x-component');
-    legend('Exact solution', 'Fehlberg', 'Location', 'best', 'Interpreter', 'Latex');
+    xlabel('Time', 'Interpreter', 'latex', 'FontSize', 18);
+    ylabel('$x(t)$', 'Interpreter', 'latex', 'FontSize', 18);
+    title('Planetary Motion x-component', 'Interpreter','latex', 'FontSize',20);
+    legend('Exact solution', 'Fehlberg', 'Location', 'best', 'Interpreter', 'latex');
 
     subplot(2,1,2); 
-    plot(t_range,V(:,2),'k','LineWidth',2);
+    plot(t_range,V(:,2),'k-','LineWidth',3);
     hold on; 
-    plot(t_Fehl,X_Fehl(:,2),'--','markerfacecolor','k','markeredgecolor','k','markersize',3);
-    xlabel('Time', 'Interpreter', 'Latex');
-    ylabel('$y(t)$', 'Interpreter', 'Latex');
-    title('Planetary Motion y-component');
+    % plot(t_Fehl,X_Fehl(:,2),'--','markerfacecolor','k','markeredgecolor','k','markersize',3);
+    plot(t_Fehl, X_Fehl(:,2),'r--', 'LineWidth', 3);
+    xlabel('Time', 'Interpreter', 'latex', 'FontSize',18);
+    ylabel('$y(t)$', 'Interpreter', 'latex', 'FontSize',18);
+    title('Planetary Motion y-component', 'Interpreter', 'latex', 'FontSize', 20);
     legend('Exact solution', 'Fehlberg', 'Location', 'best', 'Interpreter', 'Latex');
 end
